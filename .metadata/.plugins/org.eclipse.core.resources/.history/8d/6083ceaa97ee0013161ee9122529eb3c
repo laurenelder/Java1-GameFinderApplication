@@ -1,0 +1,83 @@
+package classDetails;
+
+public class Stores {
+	
+	public String storeID;
+	public storeName name;
+	static enum storeName {
+		Steam,
+		Gamers_Gate,
+		GreenManGaming,
+		Amazon,
+		GameStop,
+		GameFly,
+		GoG,
+		Origin,
+		Get_Games,
+		Shiny_Loot,
+		Humble_Store,
+		Desura
+	}
+
+	public Stores(Integer ID) {
+		// TODO Auto-generated constructor stub
+		if (ID == 1) {
+			this.storeID = ID.toString();
+			this.name = storeName.Steam;
+		}
+		if (ID == 2) {
+			this.storeID = 2;
+			this.name = storeName.Gamers_Gate;
+		}
+		if (ID == 3) {
+			this.storeID = 3;
+			this.name = storeName.GreenManGaming;
+		}
+		if (ID == 4) {
+			this.storeID = 4;
+			this.name = storeName.Amazon;
+		}
+		if (ID == 5) {
+			this.storeID = 5;
+			this.name = storeName.GameStop;
+		}
+		if (ID == 6) {
+			this.storeID = 6;
+			this.name = storeName.GameFly;
+		}
+		if (ID == 7) {
+			this.storeID = 7;
+			this.name = storeName.GoG;
+		}
+		if (ID == 8) {
+			this.storeID = 8;
+			this.name = storeName.Origin;
+		}
+		if (ID == 9) {
+			this.storeID = 9;
+			this.name = storeName.Get_Games;
+		}
+		if (ID == 10) {
+			this.storeID = 10;
+			this.name = storeName.Shiny_Loot;
+		}
+		if (ID == 11) {
+			this.storeID = 11;
+			this.name = storeName.Humble_Store;
+		}
+		if (ID == 12) {
+			this.storeID = 12;
+			this.name = storeName.Desura;
+		}
+	}
+	
+	public String toString() {
+		return storeID;
+	}
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+
+	}
+
+}

@@ -1,0 +1,25 @@
+package classDetails;
+
+import java.net.URL;
+
+public class GameDetails {
+	
+	public Integer storeID;
+	public String name;
+	public String publisher;
+	public String salePrice;
+	public String retailPrice;
+	public URL image;
+
+	public GameDetails(Integer thisStoreID, String thisName, String thisPublisher
+			, String thisSalePrice, String thisRetailPrice, URL thisImage) {
+		// TODO Auto-generated constructor stub
+		
+	}
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+
+	}
+
+}

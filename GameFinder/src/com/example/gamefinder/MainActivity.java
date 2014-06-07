@@ -3,6 +3,7 @@ package com.example.gamefinder;
 import android.app.Activity;
 import android.app.ActionBar;
 import android.app.Fragment;
+import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -13,6 +14,9 @@ import android.os.Build;
 
 public class MainActivity extends Activity {
 
+	static String tag = "NETWORK DATA - MAINACTIVITY";
+	static Context context;
+	
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

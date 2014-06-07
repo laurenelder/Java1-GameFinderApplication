@@ -1,0 +1,29 @@
+package classDetails;
+
+public class Stores {
+	
+	static enum storeName {
+		Steam,
+		Gamers_Gate,
+		GreenManGaming,
+		Amazon,
+		GameStop,
+		GameFly,
+		GoG,
+		Origin,
+		Get_Games,
+		Shiny_Loot,
+		Humble_Store,
+		Desura
+	}
+
+	public Stores(Integer storeID) {
+		// TODO Auto-generated constructor stub
+	}
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+
+	}
+
+}
