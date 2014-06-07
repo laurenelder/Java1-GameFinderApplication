@@ -1,0 +1,22 @@
+{
+
+    "gameInfo": {
+        "storeID": "2",
+        "gameID": "87437",
+        "name": "Resident Evil: Operation Raccoon City",
+        "salePrice": "29.95",
+        "retailPrice": "29.95",
+        "metacriticScore": "48",
+        "metacriticLink": "/game/pc/resident-evil-operation-raccoon-city",
+        "releaseDate": 1337299200,
+        "publisher": "Capcom",
+        "steamworks": "0",
+        "thumb": "http://cdn.akamai.steamstatic.com/steam/apps/209100/capsule_sm_120.jpg?t=1381711863"
+    },
+    "cheaperStores": [ ],
+    "cheapestPrice": {
+        "price": "7.49",
+        "date": 1372926056
+    }
+
+}

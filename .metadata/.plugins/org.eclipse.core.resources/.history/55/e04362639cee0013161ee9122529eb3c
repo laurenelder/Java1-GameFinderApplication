@@ -1,0 +1,52 @@
+[
+
+    {
+        "storeID": "1",
+        "storeName": "Steam"
+    },
+    {
+        "storeID": "2",
+        "storeName": "Gamer's Gate"
+    },
+    {
+        "storeID": "3",
+        "storeName": "GreenManGaming"
+    },
+    {
+        "storeID": "4",
+        "storeName": "Amazon"
+    },
+    {
+        "storeID": "5",
+        "storeName": "GameStop"
+    },
+    {
+        "storeID": "6",
+        "storeName": "GameFly"
+    },
+    {
+        "storeID": "7",
+        "storeName": "GoG"
+    },
+    {
+        "storeID": "8",
+        "storeName": "Origin"
+    },
+    {
+        "storeID": "12",
+        "storeName": "Desura"
+    },
+    {
+        "storeID": "9",
+        "storeName": "Get Games"
+    },
+    {
+        "storeID": "11",
+        "storeName": "Humble Store"
+    },
+    {
+        "storeID": "10",
+        "storeName": "Shiny Loot"
+    }
+
+]

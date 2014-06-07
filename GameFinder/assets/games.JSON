@@ -1,0 +1,44 @@
+[
+
+    {
+        "gameID": "144",
+        "steamAppID": "21690",
+        "cheapest": "19.95",
+        "cheapestDealID": "%2Bax0A6lezJBBAj819dkpHFq7CVIwC6sNPHDAoVG4oWo%3D",
+        "external": "Resident Evil 5",
+        "thumb": "http://cdn.akamai.steamstatic.com/steam/apps/21690/capsule_sm_120.jpg?t=1381790689"
+    },
+    {
+        "gameID": "87437",
+        "steamAppID": "209100",
+        "cheapest": "29.95",
+        "cheapestDealID": "Jt5os7ew%2FWGJ47OhLwFk%2BLNAeGm851R7g4jZmeAjtHU%3D",
+        "external": "Resident Evil: Operation Raccoon City",
+        "thumb": "http://cdn.akamai.steamstatic.com/steam/apps/209100/capsule_sm_120.jpg?t=1381711863"
+    },
+    {
+        "gameID": "92773",
+        "steamAppID": null,
+        "cheapest": "9.95",
+        "cheapestDealID": "ndMDM13i13FBc18%2F1lbdFPVvQ0Nj4EJd7EAxCM42xak%3D",
+        "external": "Resident Evil 5 Original Soundtrack",
+        "thumb": "http://www.gamersgate.com/img/boximgs/small/DD-RE5OST.jpg"
+    },
+    {
+        "gameID": "92774",
+        "steamAppID": null,
+        "cheapest": "9.95",
+        "cheapestDealID": "3xXFBfl%2B2dPhgAuR8qvcm9gCIXEpGEp17BzBsMdjOlY%3D",
+        "external": "Resident Evil Operation Raccoon City Original Soundtrack",
+        "thumb": "http://www.gamersgate.com/img/boximgs/small/DD-REORCOST.jpg"
+    },
+    {
+        "gameID": "92776",
+        "steamAppID": null,
+        "cheapest": "9.95",
+        "cheapestDealID": "MffiE%2BrcyKY4iI1GsGf2RMkzNzYap8aMr7lq7LP8dNI%3D",
+        "external": "Resident Evil: The Darkside Chronicles Original Soundtrack",
+        "thumb": "http://www.gamersgate.com/img/boximgs/small/DD-REDCOST.jpg"
+    }
+
+]
