@@ -147,3 +147,31 @@ Write access not allowed during rendering (user.timezone)
 	at org.eclipse.equinox.launcher.Main.invokeFramework(Main.java:636)
 	at org.eclipse.equinox.launcher.Main.basicRun(Main.java:591)
 	at org.eclipse.equinox.launcher.Main.run(Main.java:1450)
+!SESSION 2014-06-07 16:42:19.008 -----------------------------------------------
+eclipse.buildId=v22.6.2-1085508
+java.version=1.6.0_65
+java.vendor=Apple Inc.
+BootLoader constants: OS=macosx, ARCH=x86_64, WS=cocoa, NL=en_US
+Framework arguments:  -product com.android.ide.eclipse.adt.package.product -product com.android.ide.eclipse.adt.package.product -product com.android.ide.eclipse.adt.package.product -product com.android.ide.eclipse.adt.package.product -keyring /Users/devinelder/.eclipse_keyring -showlocation
+Command-line arguments:  -os macosx -ws cocoa -arch x86_64 -product com.android.ide.eclipse.adt.package.product -product com.android.ide.eclipse.adt.package.product -product com.android.ide.eclipse.adt.package.product -data /Users/devinelder/Desktop/Java1 GameFinderApplication -product com.android.ide.eclipse.adt.package.product -keyring /Users/devinelder/.eclipse_keyring -showlocation
+
+!ENTRY org.eclipse.core.net 1 0 2014-06-07 16:42:22.410
+!MESSAGE System property http.nonProxyHosts has been set to local|*.local|169.254/16|*.169.254/16 by an external source. This value will be overwritten using the values from the preferences
+
+!ENTRY com.android.ide.eclipse.adt 2 0 2014-06-07 16:42:33.338
+!MESSAGE activity_main.xml: Couldn't resolve resource @string/title_text
+
+!ENTRY com.android.ide.eclipse.adt 2 0 2014-06-07 16:42:33.344
+!MESSAGE activity_main.xml: Couldn't resolve resource @string/breakin_rounds
+
+!ENTRY com.android.ide.eclipse.adt 2 0 2014-06-07 16:42:33.387
+!MESSAGE activity_main.xml: Couldn't resolve resource @string/breakin_hint
+
+!ENTRY com.android.ide.eclipse.adt 2 0 2014-06-07 16:42:33.425
+!MESSAGE activity_main.xml: Couldn't resolve resource @string/rounds_fired
+
+!ENTRY com.android.ide.eclipse.adt 2 0 2014-06-07 16:42:33.435
+!MESSAGE activity_main.xml: Couldn't resolve resource @string/range_hint
+
+!ENTRY com.android.ide.eclipse.adt 2 0 2014-06-07 16:42:33.452
+!MESSAGE activity_main.xml: Couldn't resolve resource @string/button_text
