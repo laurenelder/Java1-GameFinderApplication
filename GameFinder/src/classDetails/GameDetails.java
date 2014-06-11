@@ -9,10 +9,10 @@ public class GameDetails {
 	public String publisher;
 	public String salePrice;
 	public String retailPrice;
-	public URL image;
+	public String image;
 
 	public GameDetails(Integer thisStoreID, String thisName, String thisPublisher
-			, String thisSalePrice, String thisRetailPrice, URL thisImage) {
+			, String thisSalePrice, String thisRetailPrice, String thisImage) {
 		// TODO Auto-generated constructor stub
 		this.storeID = thisStoreID;
 		this.name = thisName;

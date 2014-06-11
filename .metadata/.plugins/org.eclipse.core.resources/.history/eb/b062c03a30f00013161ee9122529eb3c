@@ -1,0 +1,255 @@
+package com.example.gamefinder;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import classDetails.GameDetails;
+import classDetails.Games;
+import classDetails.Stores;
+import android.app.Activity;
+import android.app.ActionBar;
+import android.app.Fragment;
+import android.content.Context;
+import android.content.res.Resources;
+import android.os.Bundle;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.os.Build;
+
+public class MainActivity extends Activity {
+
+	static String tag = "MAINACTIVITY";
+	static Context context;
+	String dd = getString(R.string.dummy_data);
+	List<Games> gamesList = new ArrayList<Games>();
+	
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        if (savedInstanceState == null) {
+            getFragmentManager().beginTransaction()
+                    .add(R.id.container, new PlaceholderFragment())
+                    .commit();
+        }
+        ArrayAdapter<Games> listAdapter = new ArrayAdapter<Games>
+		(this, android.R.layout.simple_list_item_1, gamesList);
+		setListAdapter(listAdapter);
+		parseData("games");
+		listAdapter.notifyDataSetChanged();
+    }
+
+
+    private String getString(String dummyData) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+	private void setListAdapter(ArrayAdapter<Games> listAdapter) {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	@Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+        if (id == R.id.action_settings) {
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    /**
+     * A placeholder fragment containing a simple view.
+     */
+    public static class PlaceholderFragment extends Fragment {
+
+        public PlaceholderFragment() {
+        }
+
+        @Override
+        public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                Bundle savedInstanceState) {
+            View rootView = inflater.inflate(R.layout.fragment_main, container, false);
+            return rootView;
+        }
+    }
+    
+	// Get and Parse JSON Function
+	public void parseData(String classType) {
+		
+		//Get Data
+		StringBuffer jsonBuffer = new StringBuffer();
+		BufferedReader reader = null;
+		try {
+			if (classType.matches("games")) {
+				reader = new BufferedReader(new InputStreamReader(getAssets().open(
+						"games.JSON")));
+			}
+			if (classType.matches("stores")) {
+				reader = new BufferedReader(new InputStreamReader(getAssets().open(
+						"stores.JSON")));
+			}
+			if (classType.matches("details")) {
+				reader = new BufferedReader(new InputStreamReader(getAssets().open(
+						"gameDetails.JSON")));
+			}
+/*			reader = new BufferedReader(new InputStreamReader(getAssets().open(
+			"games.JSON")));*/
+			String temporaryData;
+			while ((temporaryData = reader.readLine()) != null)
+				jsonBuffer.append(temporaryData);
+		} 
+		catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				reader.close(); // stop reading
+			} 
+			catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		String jsonString = jsonBuffer.toString();
+		Log.i(tag, jsonString);
+		// Parse JSON
+		try {
+			// Creating JSONObject from String
+			if (classType.matches("games")) {
+				JSONArray jsonArray = new JSONArray(jsonString);
+				for (int i = 0; i < jsonArray.length(); i++) {
+					
+					// Creating JSONObject from JSONArray
+					JSONObject jsonSubObject = jsonArray.getJSONObject(i);
+//					String external = jsonSubObject.getString("external");
+					
+//					Class Specific Data
+					String thisGameName = jsonSubObject.getString("external");
+					String thisDealID = jsonSubObject.getString("cheapestDealID");
+					String thisCheapestPrice = jsonSubObject.getString("cheapest");
+					String thisThumbnail = jsonSubObject.getString("thumb");
+					Log.i(tag, thisGameName);
+					Log.i(tag, thisDealID);
+					Log.i(tag, thisCheapestPrice);
+					Log.i(tag, thisThumbnail);
+					
+					// Dummy Data
+					Integer thisStoreID = 0;
+					String thisName = dd;
+					String thisPublisher = dd;
+					String thisSalePrice = dd;
+					String thisRetailPrice = dd;
+					String thisImage = dd;
+					Integer thisID = 0;
+					
+					// Set Class Method
+					setClass( classType, thisGameName, thisDealID, thisCheapestPrice
+							, thisThumbnail, thisStoreID, thisName, thisPublisher, thisSalePrice
+							, thisRetailPrice, thisImage, thisID);
+				}
+				
+			}
+			if (classType.matches("stores")) {
+				JSONArray jsonArray = new JSONArray(jsonString);
+				for (int i = 0; i < jsonArray.length(); i++) {
+					
+					// Creating JSONObject from JSONArray
+					JSONObject jsonSubObject = jsonArray.getJSONObject(i);
+//					String external = jsonSubObject.getString("external");
+					Log.i(tag, jsonSubObject.getString("storeID"));
+					Integer thisID = Integer.parseInt(jsonSubObject.getString("storeID"));
+					setClass( classType, thisGameName, thisDealID, thisCheapestPrice
+							, thisThumbnail, thisStoreID, thisName, thisPublisher, thisSalePrice
+							, thisRetailPrice, thisImage, thisID);
+				}
+			}
+			if (classType.matches("details")) {
+				JSONObject mainObject = new JSONObject(jsonString);
+				JSONObject subObject = mainObject.getJSONObject("gameInfo");
+				Integer thisStoreID = Integer.parseInt(subObject.getString("storeID"));
+				String thisName = subObject.getString("name");
+				String thisPublisher = subObject.getString("publisher");
+				String thisSalePrice = subObject.getString("salePrice");
+				String thisRetailPrice = subObject.getString("retailPrice");
+				String thisImage = subObject.getString("thumb");
+				setClass( classType, thisGameName, thisDealID, thisCheapestPrice
+						, thisThumbnail, thisStoreID, thisName, thisPublisher, thisSalePrice
+						, thisRetailPrice, thisImage, thisID);
+			}
+//			JSONObject mainObject = new JSONObject(jsonString);
+//			JSONArray jsonArray = new JSONArray(jsonString);
+
+			// Creating JSONArray from JSONObject
+//			JSONArray jsonArray = mainObject.getJSONArray("");
+
+			// JSONArray has four JSONObject
+/*			for (int i = 0; i < jsonArray.length(); i++) {
+	
+				// Creating JSONObject from JSONArray
+				JSONObject jsonSubObject = jsonArray.getJSONObject(i);
+//				String external = jsonSubObject.getString("external");
+				Log.i(tag, jsonSubObject.getString("external"));
+				Log.i(tag, jsonSubObject.getString("cheapestDealID"));
+				Log.i(tag, jsonSubObject.getString("cheapest"));
+				Log.i(tag, jsonSubObject.getString("thumb"));
+				String thisGameName = jsonSubObject.getString("external");
+				String thisDealID = jsonSubObject.getString("cheapestDealID");
+				String thisCheapestPrice = jsonSubObject.getString("cheapest");
+				String thisThumbnail = jsonSubObject.getString("thumb");
+				setClass( classType, thisGameName, thisDealID, thisCheapestPrice
+						, thisThumbnail, thisStoreID, thisName, thisPublisher, thisSalePrice
+						, thisRetailPrice, thisImage, thisID);
+			}*/
+		} 
+		catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		
+	}
+    
+	public void setClass( String type, String gameName, String dealID, String cheapestPrice
+			, String thumbnail, Integer StoreID, String Name, String Publisher
+			, String SalePrice, String RetailPrice, String Image, Integer ID) {
+		if (type.matches("games")) {
+			Games newGame = new Games(gameName, dealID, cheapestPrice, thumbnail);
+			gamesList.add(newGame);
+		}
+		if (type.matches("stores")) {
+			Stores newStoreList = new Stores(ID);
+		}
+		if (type.matches("details")) {
+			GameDetails details = new GameDetails(StoreID, Name, Publisher
+					, SalePrice, RetailPrice, Image);
+		}
+	}
+	
+}

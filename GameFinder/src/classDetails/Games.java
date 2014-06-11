@@ -7,10 +7,10 @@ public class Games {
 	public String gameName;
 	public String dealID;
 	public String cheapestPrice;
-	public URL thumbnail;
+	public String thumbnail;
 
 	public Games(String thisGameName, String thisDealID, String thisCheapestPrice
-				, URL thisThumbnail) {
+				, String thisThumbnail) {
 		// TODO Auto-generated constructor stub
 		this.gameName = thisGameName;
 		this.dealID = thisDealID;
