@@ -2,9 +2,8 @@ package classDetails;
 
 public class Stores {
 	
-	public String storeID;
 	public storeName name;
-	static enum storeName {
+	public static enum storeName {
 		Steam,
 		Gamers_Gate,
 		GreenManGaming,
@@ -18,6 +17,7 @@ public class Stores {
 		Humble_Store,
 		Desura
 	}
+	public String storeID;
 
 	public Stores(Integer ID) {
 		// TODO Auto-generated constructor stub
@@ -72,7 +72,7 @@ public class Stores {
 	}
 	
 	public String toString() {
-		return storeID;
+		return name.toString();
 	}
 
 	public static void main(String[] args) {
