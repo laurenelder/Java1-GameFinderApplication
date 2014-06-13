@@ -1,5 +1,12 @@
+// Name: Devin "Lauren" Elder
+// Application: Game Finder Application
+// Date: 6/7/2014
+// Class: Java 1 Term 201406
+// Assignment: Project 2
+
 package classDetails;
 
+// Store List Class
 public class Stores {
 	
 	public storeName name;
@@ -74,10 +81,4 @@ public class Stores {
 	public String toString() {
 		return name.toString();
 	}
-
-	public static void main(String[] args) {
-		// TODO Auto-generated method stub
-
-	}
-
 }

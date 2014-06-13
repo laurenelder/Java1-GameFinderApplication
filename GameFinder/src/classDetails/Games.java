@@ -1,8 +1,12 @@
+// Name: Devin "Lauren" Elder
+// Application: Game Finder Application
+// Date: 6/7/2014
+// Class: Java 1 Term 201406
+// Assignment: Project 2
+
 package classDetails;
 
-import java.net.URL;
-import java.util.ArrayList;
-
+// Game List Class
 public class Games {
 	
 	public String gameName;
@@ -22,12 +26,4 @@ public class Games {
 	public String toString() {
 		return gameName;
 	}
-	
-
-
-	public static void main(String[] args) {
-		// TODO Auto-generated method stub
-
-	}
-
 }

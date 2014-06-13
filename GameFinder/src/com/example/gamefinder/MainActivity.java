@@ -1,3 +1,9 @@
+// Name: Devin "Lauren" Elder
+// Application: Game Finder Application
+// Date: 6/7/2014
+// Class: Java 1 Term 201406
+// Assignment: Project 2
+
 package com.example.gamefinder;
 
 import java.io.BufferedReader;
@@ -27,13 +33,13 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Spinner;
-import android.widget.Toast;
 import classDetails.GameDetails;
 import classDetails.Games;
 import classDetails.Stores;
 
 public class MainActivity extends Activity {
 
+	// Global Variables
 	static String tag = "MAINACTIVITY";
 	static Context context;
 	String dd = "Not Applicable";
@@ -63,6 +69,7 @@ public class MainActivity extends Activity {
 			public void onItemClick(AdapterView<?> parent, View view,
 					int position, long id) {
 				// TODO Auto-generated method stub
+				// Display Game Information Method
 				showAlert(view, gamesList.get(position).toString());
 //				Log.i(tag, "The listener works!");
 			}
@@ -76,19 +83,16 @@ public class MainActivity extends Activity {
 		Spinner spinnerView = (Spinner)findViewById(R.id.storeList);
 		spinnerView.setAdapter(spinnerAdapter);
 		
+		// JSON Parse Methods
 		parseData("games");
 		parseData("stores");
 		parseData("details");
-		Log.i(tag, gamesList.toString());
+//		Log.i(tag, gamesList.toString());
 
+		// Refresh Adapter Methods
 		listAdapter.notifyDataSetChanged();
 		spinnerAdapter.notifyDataSetChanged();
     }
-
-	private void setListAdapter(ArrayAdapter<Games> listAdapter) {
-		// TODO Auto-generated method stub
-		
-	}
 
 
 	@Override
@@ -134,6 +138,7 @@ public class MainActivity extends Activity {
 		StringBuffer jsonBuffer = new StringBuffer();
 		BufferedReader reader = null;
 		try {
+			// Selection of Static JSON Data and Parse According to JSON Format
 			if (classType.matches("games")) {
 				reader = new BufferedReader(new InputStreamReader(getAssets().open(
 						"games.JSON")));
@@ -146,8 +151,6 @@ public class MainActivity extends Activity {
 				reader = new BufferedReader(new InputStreamReader(getAssets().open(
 						"gameDetails.JSON")));
 			}
-/*			reader = new BufferedReader(new InputStreamReader(getAssets().open(
-			"games.JSON")));*/
 			String temporaryData;
 			while ((temporaryData = reader.readLine()) != null)
 				jsonBuffer.append(temporaryData);
@@ -156,7 +159,7 @@ public class MainActivity extends Activity {
 			e.printStackTrace();
 		} finally {
 			try {
-				reader.close(); // stop reading
+				reader.close(); 
 			} 
 			catch (IOException e) {
 				e.printStackTrace();
@@ -173,7 +176,6 @@ public class MainActivity extends Activity {
 					
 					// Creating JSONObject from JSONArray
 					JSONObject jsonSubObject = jsonArray.getJSONObject(i);
-//					String external = jsonSubObject.getString("external");
 					
 					// Class Specific Data
 					String thisGameName = jsonSubObject.getString("external");
@@ -207,7 +209,6 @@ public class MainActivity extends Activity {
 					
 					// Creating JSONObject from JSONArray
 					JSONObject jsonSubObject = jsonArray.getJSONObject(i);
-//					String external = jsonSubObject.getString("external");
 					
 					// Class Specific Data
 					Integer thisID = Integer.parseInt(jsonSubObject.getString("storeID"));
@@ -268,6 +269,7 @@ public class MainActivity extends Activity {
 		}
 	}
     
+	// Assigning Parsed Data to Proper Class
 	public void setClass( String type, String gameName, String dealID, String cheapestPrice
 			, String thumbnail, Integer StoreID, String Name, String Publisher
 			, String SalePrice, String RetailPrice, String Image, Integer ID) {
@@ -287,9 +289,11 @@ public class MainActivity extends Activity {
 		}
 	}
 
+	// Alert Dialog with Game Information
     private void showAlert(View view, String findName) { 
     	AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(MainActivity.this);
     	alertDialogBuilder.setTitle(R.string.dialog_title);
+    	// Constructing Alert Information from JSON Data
         for (int i = 0; i < gamesList.size(); i++) {
         	if (findName.matches(gamesList.get(i).toString()) ) {
         		String selectedStore = null;
@@ -307,16 +311,13 @@ public class MainActivity extends Activity {
         				+ "\r\nSale Price: " + gameDetails.get(0).salePrice.toString();
         				
         		alertDialogBuilder.setMessage(allData);
-//        		Log.i(tag, );
         	}
         }
-    	// set negative button: No message
+    	// Setting the Text for the Dialog Button
     	alertDialogBuilder.setNegativeButton(R.string.dialog_button,new DialogInterface.OnClickListener() {
     		public void onClick(DialogInterface dialog,int id) {
-    			// cancel the alert box and put a Toast to the user
+    			// Close the Alert Dialog
     			dialog.cancel();
- /*   			Toast.makeText(getApplicationContext(), "You chose a negative answer",
-    					Toast.LENGTH_LONG).show();*/
     		}
     	});
     	AlertDialog alertDialog = alertDialogBuilder.create();
