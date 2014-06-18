@@ -1,0 +1,9 @@
+package classDetails;
+
+public class APIresponse {
+
+	public APIresponse() {
+		// TODO Auto-generated constructor stub
+	}
+
+}

@@ -1,0 +1,16 @@
+package classDetails;
+
+public class APIresponse {
+	
+	public String response;
+
+	public APIresponse(String thisAPIresponse) {
+		// TODO Auto-generated constructor stub
+		response = thisAPIresponse;
+	}
+	
+	public String toString() {
+		return response;
+	}
+
+}

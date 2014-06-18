@@ -6,9 +6,13 @@
 
 package com.example.gamefinder;
 
+import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,6 +25,9 @@ import android.app.AlertDialog;
 import android.app.Fragment;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -31,6 +38,8 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Spinner;
 import classDetails.GameDetails;
@@ -42,7 +51,15 @@ public class MainActivity extends Activity {
 	// Global Variables
 	static String tag = "MAINACTIVITY";
 	static Context context;
-	String dd = "Not Applicable";
+	String dd;
+	String currentURL;
+	String dealID;
+	int listPosition;
+	boolean game;
+	boolean details;
+	boolean stores;
+	ArrayAdapter<Games> listAdapter;
+	ArrayAdapter<Stores> spinnerAdapter;
 	List<Games> gamesList = new ArrayList<Games>();
 	List<Stores> storeList = new ArrayList<Stores>();
 	List<GameDetails> gameDetails = new ArrayList<GameDetails>();
@@ -50,6 +67,8 @@ public class MainActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        context = this;
+        dd = context.getString(R.string.dummy_data);
         setContentView(R.layout.activity_main);
 
         if (savedInstanceState == null) {
@@ -59,7 +78,7 @@ public class MainActivity extends Activity {
         }
         
         // ListView Code
-        ArrayAdapter<Games> listAdapter = new ArrayAdapter<Games>
+        listAdapter = new ArrayAdapter<Games>
 		(this, android.R.layout.simple_list_item_1, gamesList);
         ListView listView = (ListView)findViewById(R.id.list);
 		listView.setAdapter(listAdapter);
@@ -68,27 +87,85 @@ public class MainActivity extends Activity {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view,
 					int position, long id) {
+				game = false;
+				details = true;
+				stores = false;
+				gameDetails.removeAll(gameDetails);
 				// TODO Auto-generated method stub
 				// Display Game Information Method
-				showAlert(view, gamesList.get(position).toString());
+				listPosition = position;
+				dealID = gamesList.get(position).dealID.toString();
+				currentURL = context.getString(R.string.details_url) + dealID;
+				Log.i(tag, currentURL.toString());
+				getAPIdata data = new getAPIdata();
+				data.execute(currentURL);
+//				showAlert(view, gamesList.get(position).toString());
 //				Log.i(tag, "The listener works!");
 			}
 			
 		});
 		
 		// Spinner Code
-		ArrayAdapter<Stores> spinnerAdapter = new ArrayAdapter<Stores>
+		spinnerAdapter = new ArrayAdapter<Stores>
 		(this, android.R.layout.simple_spinner_item, storeList);
 		spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		Spinner spinnerView = (Spinner)findViewById(R.id.storeList);
 		spinnerView.setAdapter(spinnerAdapter);
 		
-		// JSON Parse Methods
-		parseData("games");
-		parseData("stores");
-		parseData("details");
-//		Log.i(tag, gamesList.toString());
+		// Static JSON Parse Methods
+		parseData("games", null);
+//		parseData("stores", null);
+//		parseData("details", null);
+		
+		if (checkConnection(context) == true) {
+			game = false;
+			details = false;
+			stores = true;
+			getAPIdata data = new getAPIdata();
+			data.execute(context.getString(R.string.store_url));
+		} else {
+			showErrorAlert(findViewById(android.R.id.content).getRootView(), "connection");
+			Log.i(tag, "No Internet Connection");
+		}
 
+//		Log.i(tag, gamesList.toString());
+		Button findButton = (Button)findViewById(R.id.findButton);
+		findButton.setOnClickListener(new View.OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				if (checkConnection(context) == true) {
+					game = true;
+					details = false;
+					stores = false;
+					EditText searchField = (EditText)findViewById(R.id.gameInput);
+					String gameInput = searchField.getText().toString();
+					if (gameInput.isEmpty()) {
+						showErrorAlert(v, "input");
+					} else {
+						gamesList.removeAll(gamesList);
+						String gameEndURL = context.getString(R.string.post_game_url);
+//						Log.i(tag, gameEndURL.toString());
+						gameEndURL = gameEndURL.replace("_", "&");
+//						Log.i(tag, gameEndURL.toString());
+						String gameFullURL = context.getString(R.string.game_url) + gameInput 
+								+ gameEndURL;
+						currentURL = gameFullURL;
+						getAPIdata data = new getAPIdata();
+						data.execute(gameFullURL);
+//						Log.i(tag, apiResponseList.toString());
+						Log.i(tag, gamesList.toString());
+//						parseData("games", APIdata);
+					}
+//					listAdapter.notifyDataSetChanged();
+				} else {
+					showErrorAlert(v, "connection");
+					Log.i(tag, "No Internet Connection");
+				}
+			}
+			
+		});
 		// Refresh Adapter Methods
 		listAdapter.notifyDataSetChanged();
 		spinnerAdapter.notifyDataSetChanged();
@@ -132,7 +209,7 @@ public class MainActivity extends Activity {
     }
     
 	// Get and Parse JSON Function
-	public void parseData(String classType) {
+	public void parseData(String classType, String apiData) {
 		
 		//Get Data
 		StringBuffer jsonBuffer = new StringBuffer();
@@ -165,7 +242,13 @@ public class MainActivity extends Activity {
 				e.printStackTrace();
 			}
 		}
-		String jsonString = jsonBuffer.toString();
+		String jsonString;
+		if (apiData == null) {
+			jsonString = jsonBuffer.toString();
+			
+		} else {
+			jsonString = apiData;
+		}
 //		Log.i(tag, jsonString);
 		// Parse JSON
 		try {
@@ -276,25 +359,69 @@ public class MainActivity extends Activity {
 		if (type.matches("games")) {
 			Games newGame = new Games(gameName, dealID, cheapestPrice, thumbnail);
 			gamesList.add(newGame);
-			Log.i(tag, "This Part Works!");
+//			Log.i(tag, newGame.toString());
+			listAdapter.notifyDataSetChanged();
 		}
 		if (type.matches("stores")) {
 			Stores newStoreList = new Stores(ID);
 			storeList.add(newStoreList);
+			spinnerAdapter.notifyDataSetChanged();
 		}
 		if (type.matches("details")) {
 			GameDetails details = new GameDetails(StoreID, Name, Publisher
 					, SalePrice, RetailPrice, Image);
 			gameDetails.add(details);
+			showAlert(findViewById(android.R.id.content).getRootView());
+			Log.i(tag, details.toString());
 		}
 	}
+	
+	// Internet Connection Error
+	private void showErrorAlert(View view, String error) {
+    	AlertDialog.Builder alertErrorNotification = new AlertDialog.Builder(MainActivity.this);
+    	if (error == "input") {
+        	alertErrorNotification.setTitle(R.string.input_error_title);
+        	alertErrorNotification.setMessage(R.string.input_error_message);
+    	}
+    	if (error == "connection") {
+        	alertErrorNotification.setTitle(R.string.connection_error_title);
+        	alertErrorNotification.setMessage(R.string.connection_error_message);
+    	}
+    	// Setting the Text for the Dialog Button
+    	alertErrorNotification.setNegativeButton(R.string.dialog_button,new DialogInterface.OnClickListener() {
+    		public void onClick(DialogInterface dialog,int id) {
+    			// Close the Alert Dialog
+    			dialog.cancel();
+    		}
+    	});
+    	AlertDialog alertErrorDialog = alertErrorNotification.create();
+    	// show alert
+    	alertErrorDialog.show();
+    }
 
 	// Alert Dialog with Game Information
-    private void showAlert(View view, String findName) { 
+    private void showAlert(View view) { 
     	AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(MainActivity.this);
     	alertDialogBuilder.setTitle(R.string.dialog_title);
     	// Constructing Alert Information from JSON Data
-        for (int i = 0; i < gamesList.size(); i++) {
+    	
+    	String selectedStore = null;
+    	for (int a = 0; a < storeList.size(); a++) {
+			if (gameDetails.get(0).storeID.toString().matches
+					(storeList.get(a).storeID.toString())) {
+				selectedStore = storeList.get(a).name.toString();
+				selectedStore = selectedStore.replace("_", " ");
+			}
+		}
+		String allData = "Game: " + gameDetails.get(0).name.toString()
+				+ "\r\nPublisher: " + gameDetails.get(0).publisher.toString()
+				+ "\r\nStore: " + selectedStore
+				+ "\r\nRetail Price: " + gameDetails.get(0).retailPrice.toString()
+				+ "\r\nSale Price: " + gameDetails.get(0).salePrice.toString();
+				
+		alertDialogBuilder.setMessage(allData);
+    	
+/*        for (int i = 0; i < gamesList.size(); i++) {
         	if (findName.matches(gamesList.get(i).toString()) ) {
         		String selectedStore = null;
 				for (int a = 0; a < storeList.size(); a++) {
@@ -304,7 +431,7 @@ public class MainActivity extends Activity {
 						selectedStore = selectedStore.replace("_", " ");
 					}
 				}
-        		String allData = "Game: " + gamesList.get(i).gameName.toString()
+        		String allData = "Game: " + gameDetails.get(0).name.toString()
         				+ "\r\nPublisher: " + gameDetails.get(0).publisher.toString()
         				+ "\r\nStore: " + selectedStore
         				+ "\r\nRetail Price: " + gameDetails.get(0).retailPrice.toString()
@@ -312,7 +439,7 @@ public class MainActivity extends Activity {
         				
         		alertDialogBuilder.setMessage(allData);
         	}
-        }
+        }*/
     	// Setting the Text for the Dialog Button
     	alertDialogBuilder.setNegativeButton(R.string.dialog_button,new DialogInterface.OnClickListener() {
     		public void onClick(DialogInterface dialog,int id) {
@@ -324,4 +451,95 @@ public class MainActivity extends Activity {
     	// show alert
     	alertDialog.show();
     }
+    
+    public Boolean checkConnection (Context context) {
+    	Boolean connected = false;
+    	ConnectivityManager connManag = (ConnectivityManager) MainActivity.context
+    			.getSystemService
+    			(Context.CONNECTIVITY_SERVICE);
+    	NetworkInfo networkInfomation = connManag.getActiveNetworkInfo();
+    	if (networkInfomation != null) {
+    		if (networkInfomation.isConnected()) {
+    			Log.i(tag, "Connection Type: " + networkInfomation.getTypeName()
+    					.toString());
+    			connected = true;
+    		}
+    	}
+    	return connected;
+    }
+    
+    public String getAPIresponse(URL url) {
+    	String apiResponse = "";
+    	try {
+			URLConnection apiConnection = url.openConnection();
+			BufferedInputStream bufferedInput = new BufferedInputStream(apiConnection
+					.getInputStream());
+			byte[] contextByte = new byte[1024];
+			int bytesRead = 0;
+			StringBuffer responseBuffer = new StringBuffer();
+			while ((bytesRead = bufferedInput.read(contextByte)) != -1) {
+				apiResponse = new String(contextByte, 0, bytesRead);
+				responseBuffer.append(apiResponse);
+			}
+			apiResponse = responseBuffer.toString();
+//			Log.i(tag, apiResponse);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			Log.i(tag, "getAPIresponse - no data returned");
+			e.printStackTrace();
+		}
+    	Log.i(tag, apiResponse.toString());
+    	return apiResponse;
+    }
+    
+    class getAPIdata extends AsyncTask<String, Void, String> {
+
+		@Override
+		protected String doInBackground(String... params) {
+			// TODO Auto-generated method stub
+			String APIresponseStr = "";
+			try {
+				URL url = null;
+//				URL url = new URL(context.getString(R.string.store_url));
+				if (game == true && details == false && stores == false) {
+					url = new URL(currentURL);
+				}
+				if (game == false && details == false && stores == true) {
+					url = new URL(context.getString(R.string.store_url));
+				}
+				if (game == false && details == true && stores == false) {
+					url = new URL(currentURL);
+				}
+//				APIresponseStr = getAPIresponse(url);
+				APIresponseStr = getAPIresponse(url);
+			} catch (MalformedURLException e) {
+				// TODO Auto-generated catch block
+				Log.i(tag, "Something went wrong in getAPIdata");
+				e.printStackTrace();
+			}
+			return APIresponseStr;
+		}
+		@Override
+		protected void onPostExecute(String result) {
+			// Parse JSON Method GOES HERE!!!
+//			Log.i(tag, result);
+//	    	APIresponse newResponse = new APIresponse(result);
+//	    	apiResponseList.add(newResponse);
+//	    	Log.i(tag, apiResponseList.toString());
+			super.onPostExecute(result);
+			
+			if (game == true && details == false && stores == false) {
+				parseData("games", result);
+			}
+			if (game == false && details == false && stores == true) {
+				parseData("stores", result);
+			}
+			if (game == false && details == true && stores == false) {
+				Log.i(tag, "details got hit in api method");
+				Log.i(tag, result.toString());
+				parseData("details", result);
+			}
+		}
+    }
+    
 }
