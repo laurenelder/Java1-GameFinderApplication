@@ -9,7 +9,9 @@ package com.example.gamefinder;
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
@@ -25,10 +27,13 @@ import android.app.AlertDialog;
 import android.app.Fragment;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.StrictMode;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -40,8 +45,10 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Spinner;
+import android.widget.TextView;
 import classDetails.GameDetails;
 import classDetails.Games;
 import classDetails.Stores;
@@ -58,6 +65,7 @@ public class MainActivity extends Activity {
 	boolean game;
 	boolean details;
 	boolean stores;
+	Bitmap currentThumbnail;
 	ArrayAdapter<Games> listAdapter;
 	ArrayAdapter<Stores> spinnerAdapter;
 	List<Games> gamesList = new ArrayList<Games>();
@@ -68,6 +76,9 @@ public class MainActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         context = this;
+        StrictMode.ThreadPolicy policy = new StrictMode.
+        		ThreadPolicy.Builder().permitNetwork().build();
+        		StrictMode.setThreadPolicy(policy); 
         dd = context.getString(R.string.dummy_data);
         setContentView(R.layout.activity_main);
 
@@ -78,8 +89,9 @@ public class MainActivity extends Activity {
         }
         
         // ListView Code
-        listAdapter = new ArrayAdapter<Games>
-		(this, android.R.layout.simple_list_item_1, gamesList);
+/*        listAdapter = new ArrayAdapter<Games>
+		(this, android.R.layout.simple_list_item_1, gamesList);*/
+		listAdapter = new customListAdapter();
         ListView listView = (ListView)findViewById(R.id.list);
 		listView.setAdapter(listAdapter);
 		listView.setOnItemClickListener(new OnItemClickListener() {
@@ -154,8 +166,8 @@ public class MainActivity extends Activity {
 						currentURL = gameFullURL;
 						getAPIdata data = new getAPIdata();
 						data.execute(gameFullURL);
-//						Log.i(tag, apiResponseList.toString());
-						Log.i(tag, gamesList.toString());
+						Log.i(tag, currentURL.toString());
+//						Log.i(tag, gamesList.toString());
 //						parseData("games", APIdata);
 					}
 //					listAdapter.notifyDataSetChanged();
@@ -254,6 +266,7 @@ public class MainActivity extends Activity {
 		try {
 			// Creating JSONObject from String
 			if (classType.matches("games")) {
+				Integer listCount = 0;
 				JSONArray jsonArray = new JSONArray(jsonString);
 				for (int i = 0; i < jsonArray.length(); i++) {
 					
@@ -279,10 +292,15 @@ public class MainActivity extends Activity {
 					String thisImage = dd;
 					Integer thisID = 0;
 					
-					// Set Class Method
-					setClass( classType, thisGameName, thisDealID, thisCheapestPrice
-							, thisThumbnail, thisStoreID, thisName, thisPublisher, thisSalePrice
-							, thisRetailPrice, thisImage, thisID);
+					// Limit the number of Objects Saved
+					if (listCount <= 9) {
+						Log.i(tag, listCount.toString());
+						// Set Class Method
+						setClass( classType, thisGameName, thisDealID, thisCheapestPrice
+								, thisThumbnail, thisStoreID, thisName, thisPublisher, thisSalePrice
+								, thisRetailPrice, thisImage, thisID);
+					}
+					listCount++;
 				}
 				
 			}
@@ -540,6 +558,65 @@ public class MainActivity extends Activity {
 				parseData("details", result);
 			}
 		}
+    }
+    
+    public class customListAdapter extends ArrayAdapter <Games> {
+    	public customListAdapter() {
+    		super(context, R.layout.list_item, gamesList);
+    	}
+    	
+    	public Bitmap getImageFromURL(String thumbURL) {
+    		try {
+				URL currentURL = new URL(thumbURL);
+				HttpURLConnection currentConnection = (HttpURLConnection)currentURL.openConnection();
+				currentConnection.setDoInput(true);
+				currentConnection.connect();
+				InputStream connectionInput = currentConnection.getInputStream();
+				currentThumbnail = BitmapFactory.decodeStream(connectionInput);
+			} catch (MalformedURLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				return null;
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			if (currentThumbnail != null) {
+				return currentThumbnail;
+			} else {
+				return null;
+			}
+    	}
+
+		@Override
+		public View getView(int position, View convertView, ViewGroup parent) {
+			View customItemView = convertView;
+			if (customItemView == null) {
+				LayoutInflater viewInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+				customItemView = viewInflater.inflate(R.layout.list_item, parent, false);
+			}
+			
+			ImageView thumbnailView = (ImageView)customItemView.findViewById(R.id.list_item_image);
+			TextView gameTitleView = (TextView)customItemView.findViewById(R.id.list_item_title);
+			TextView cheapestPriceView = (TextView)customItemView.findViewById(R.id.list_item_price);
+			
+			currentThumbnail = getImageFromURL(gamesList.get(position).thumbnail.toString());
+			thumbnailView.setImageBitmap(currentThumbnail);
+			gameTitleView.setText(gamesList.get(position).gameName.toString());
+			cheapestPriceView.setText("$" + gamesList.get(position).cheapestPrice.toString());
+			
+/*			for (int a = 0; a < gamesList.size(); a++) {
+				if (gamesList.get(a).toString() == gamesList.get(position).toString()) {
+					ImageView thumbnailView = (ImageView)customItemView.findViewById(R.id.list_item_image);
+					TextView gameTitleView = (TextView)customItemView.findViewById(R.id.list_item_title);
+					TextView cheapestPriceView = (TextView)customItemView.findViewById(R.id.list_item_price);
+					
+				}
+			}*/
+			
+			return customItemView;
+		}
+    	
     }
     
 }
