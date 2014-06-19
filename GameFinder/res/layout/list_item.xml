@@ -1,4 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
+
+<!-- Name: Devin "Lauren" Elder -->
+<!-- Application: Game Finder Application -->
+<!-- Date: 6/18/2014 -->
+<!-- Class: Java 1 Term 201406 -->
+<!-- Assignment: Project 3 -->
+
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
@@ -10,7 +17,7 @@
         android:layout_alignParentTop="true"
         android:layout_marginLeft="16dp"
         android:layout_toRightOf="@+id/list_item_image"
-        android:text="Game Title"
+        android:text=""
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
     <ImageView
@@ -19,7 +26,6 @@
         android:layout_height="60dp"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
-
         android:scaleType="centerCrop"
         android:contentDescription="@string/descriptor"
         android:src="@drawable/ic_launcher" />
@@ -31,7 +37,7 @@
         android:layout_alignBottom="@+id/list_item_image"
         android:layout_alignParentRight="true"
         android:layout_marginRight="14dp"
-        android:text="Price"
+        android:text=""
         android:textAppearance="?android:attr/textAppearanceSmall" />
 
 </RelativeLayout>

@@ -1,8 +1,8 @@
 // Name: Devin "Lauren" Elder
 // Application: Game Finder Application
-// Date: 6/7/2014
+// Date: 6/18/2014
 // Class: Java 1 Term 201406
-// Assignment: Project 2
+// Assignment: Project 3
 
 package com.example.gamefinder;
 
@@ -61,13 +61,16 @@ public class MainActivity extends Activity {
 	String dd;
 	String currentURL;
 	String dealID;
-	int listPosition;
 	boolean game;
 	boolean details;
 	boolean stores;
 	Bitmap currentThumbnail;
+	
+	// Array Adapters for List and Spinner
 	ArrayAdapter<Games> listAdapter;
 	ArrayAdapter<Stores> spinnerAdapter;
+	
+	// Class Lists
 	List<Games> gamesList = new ArrayList<Games>();
 	List<Stores> storeList = new ArrayList<Stores>();
 	List<GameDetails> gameDetails = new ArrayList<GameDetails>();
@@ -76,9 +79,12 @@ public class MainActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         context = this;
+        
+        // Modify StrictMode to allow access to the URL's Containing Thumbnail Images
         StrictMode.ThreadPolicy policy = new StrictMode.
         		ThreadPolicy.Builder().permitNetwork().build();
-        		StrictMode.setThreadPolicy(policy); 
+        StrictMode.setThreadPolicy(policy); 
+        		
         dd = context.getString(R.string.dummy_data);
         setContentView(R.layout.activity_main);
 
@@ -88,9 +94,7 @@ public class MainActivity extends Activity {
                     .commit();
         }
         
-        // ListView Code
-/*        listAdapter = new ArrayAdapter<Games>
-		(this, android.R.layout.simple_list_item_1, gamesList);*/
+        // ListView Code 
 		listAdapter = new customListAdapter();
         ListView listView = (ListView)findViewById(R.id.list);
 		listView.setAdapter(listAdapter);
@@ -99,19 +103,21 @@ public class MainActivity extends Activity {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view,
 					int position, long id) {
+				
+				// Boolean Set to Select Correct API
 				game = false;
 				details = true;
 				stores = false;
 				gameDetails.removeAll(gameDetails);
-				// TODO Auto-generated method stub
+
 				// Display Game Information Method
-				listPosition = position;
 				dealID = gamesList.get(position).dealID.toString();
 				currentURL = context.getString(R.string.details_url) + dealID;
-				Log.i(tag, currentURL.toString());
+//				Log.i(tag, currentURL.toString());
+				
+				// API Call for Game Details
 				getAPIdata data = new getAPIdata();
 				data.execute(currentURL);
-//				showAlert(view, gamesList.get(position).toString());
 //				Log.i(tag, "The listener works!");
 			}
 			
@@ -124,12 +130,12 @@ public class MainActivity extends Activity {
 		Spinner spinnerView = (Spinner)findViewById(R.id.storeList);
 		spinnerView.setAdapter(spinnerAdapter);
 		
-		// Static JSON Parse Methods
+		// Static Game Hint List On App Load
 		parseData("games", null);
-//		parseData("stores", null);
-//		parseData("details", null);
 		
+		// Check Network Connection and Show Error Notification if false
 		if (checkConnection(context) == true) {
+			// Boolean Set to Select Correct API
 			game = false;
 			details = false;
 			stores = true;
@@ -141,6 +147,8 @@ public class MainActivity extends Activity {
 		}
 
 //		Log.i(tag, gamesList.toString());
+		
+		// Find Button OnClickListener
 		Button findButton = (Button)findViewById(R.id.findButton);
 		findButton.setOnClickListener(new View.OnClickListener() {
 
@@ -148,14 +156,17 @@ public class MainActivity extends Activity {
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
 				if (checkConnection(context) == true) {
+					// Boolean Set to Select Correct API
 					game = true;
 					details = false;
 					stores = false;
 					EditText searchField = (EditText)findViewById(R.id.gameInput);
 					String gameInput = searchField.getText().toString();
 					if (gameInput.isEmpty()) {
+						// Error Notification for Empty EditText Field
 						showErrorAlert(v, "input");
 					} else {
+						// Clear ListView and Call Game List API
 						gamesList.removeAll(gamesList);
 						String gameEndURL = context.getString(R.string.post_game_url);
 //						Log.i(tag, gameEndURL.toString());
@@ -168,21 +179,15 @@ public class MainActivity extends Activity {
 						data.execute(gameFullURL);
 						Log.i(tag, currentURL.toString());
 //						Log.i(tag, gamesList.toString());
-//						parseData("games", APIdata);
 					}
-//					listAdapter.notifyDataSetChanged();
 				} else {
+					// Check Network Connection and Show Error Notification if false
 					showErrorAlert(v, "connection");
 					Log.i(tag, "No Internet Connection");
 				}
 			}
-			
 		});
-		// Refresh Adapter Methods
-		listAdapter.notifyDataSetChanged();
-		spinnerAdapter.notifyDataSetChanged();
     }
-
 
 	@Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -262,6 +267,7 @@ public class MainActivity extends Activity {
 			jsonString = apiData;
 		}
 //		Log.i(tag, jsonString);
+		
 		// Parse JSON
 		try {
 			// Creating JSONObject from String
@@ -294,7 +300,7 @@ public class MainActivity extends Activity {
 					
 					// Limit the number of Objects Saved
 					if (listCount <= 9) {
-						Log.i(tag, listCount.toString());
+//						Log.i(tag, listCount.toString());
 						// Set Class Method
 						setClass( classType, thisGameName, thisDealID, thisCheapestPrice
 								, thisThumbnail, thisStoreID, thisName, thisPublisher, thisSalePrice
@@ -389,6 +395,8 @@ public class MainActivity extends Activity {
 			GameDetails details = new GameDetails(StoreID, Name, Publisher
 					, SalePrice, RetailPrice, Image);
 			gameDetails.add(details);
+			
+			// Show Game Details Notification
 			showAlert(findViewById(android.R.id.content).getRootView());
 			Log.i(tag, details.toString());
 		}
@@ -397,6 +405,8 @@ public class MainActivity extends Activity {
 	// Internet Connection Error
 	private void showErrorAlert(View view, String error) {
     	AlertDialog.Builder alertErrorNotification = new AlertDialog.Builder(MainActivity.this);
+    	
+    	// Set Alert Text based on Error
     	if (error == "input") {
         	alertErrorNotification.setTitle(R.string.input_error_title);
         	alertErrorNotification.setMessage(R.string.input_error_message);
@@ -416,6 +426,30 @@ public class MainActivity extends Activity {
     	// show alert
     	alertErrorDialog.show();
     }
+	
+	// Thumbnail Set From URL
+	public Bitmap getImageFromURL(String thumbURL) {
+		try {
+			URL currentURL = new URL(thumbURL);
+			HttpURLConnection currentConnection = (HttpURLConnection)currentURL.openConnection();
+			currentConnection.setDoInput(true);
+			currentConnection.connect();
+			InputStream connectionInput = currentConnection.getInputStream();
+			currentThumbnail = BitmapFactory.decodeStream(connectionInput);
+		} catch (MalformedURLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null;
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		if (currentThumbnail != null) {
+			return currentThumbnail;
+		} else {
+			return null;
+		}
+	}
 
 	// Alert Dialog with Game Information
     private void showAlert(View view) { 
@@ -431,33 +465,16 @@ public class MainActivity extends Activity {
 				selectedStore = selectedStore.replace("_", " ");
 			}
 		}
+    	
+    	// Construct Game Details Information
 		String allData = "Game: " + gameDetails.get(0).name.toString()
 				+ "\r\nPublisher: " + gameDetails.get(0).publisher.toString()
 				+ "\r\nStore: " + selectedStore
 				+ "\r\nRetail Price: " + gameDetails.get(0).retailPrice.toString()
 				+ "\r\nSale Price: " + gameDetails.get(0).salePrice.toString();
-				
+		
 		alertDialogBuilder.setMessage(allData);
     	
-/*        for (int i = 0; i < gamesList.size(); i++) {
-        	if (findName.matches(gamesList.get(i).toString()) ) {
-        		String selectedStore = null;
-				for (int a = 0; a < storeList.size(); a++) {
-					if (gameDetails.get(0).storeID.toString().matches
-							(storeList.get(a).storeID.toString())) {
-						selectedStore = storeList.get(a).name.toString();
-						selectedStore = selectedStore.replace("_", " ");
-					}
-				}
-        		String allData = "Game: " + gameDetails.get(0).name.toString()
-        				+ "\r\nPublisher: " + gameDetails.get(0).publisher.toString()
-        				+ "\r\nStore: " + selectedStore
-        				+ "\r\nRetail Price: " + gameDetails.get(0).retailPrice.toString()
-        				+ "\r\nSale Price: " + gameDetails.get(0).salePrice.toString();
-        				
-        		alertDialogBuilder.setMessage(allData);
-        	}
-        }*/
     	// Setting the Text for the Dialog Button
     	alertDialogBuilder.setNegativeButton(R.string.dialog_button,new DialogInterface.OnClickListener() {
     		public void onClick(DialogInterface dialog,int id) {
@@ -470,6 +487,7 @@ public class MainActivity extends Activity {
     	alertDialog.show();
     }
     
+    // Check Network Connection Method
     public Boolean checkConnection (Context context) {
     	Boolean connected = false;
     	ConnectivityManager connManag = (ConnectivityManager) MainActivity.context
@@ -486,6 +504,7 @@ public class MainActivity extends Activity {
     	return connected;
     }
     
+    // API Method
     public String getAPIresponse(URL url) {
     	String apiResponse = "";
     	try {
@@ -510,15 +529,17 @@ public class MainActivity extends Activity {
     	return apiResponse;
     }
     
+    // API Class
     class getAPIdata extends AsyncTask<String, Void, String> {
 
 		@Override
 		protected String doInBackground(String... params) {
 			// TODO Auto-generated method stub
 			String APIresponseStr = "";
+			
+			// API Call based on Selected API
 			try {
 				URL url = null;
-//				URL url = new URL(context.getString(R.string.store_url));
 				if (game == true && details == false && stores == false) {
 					url = new URL(currentURL);
 				}
@@ -528,7 +549,6 @@ public class MainActivity extends Activity {
 				if (game == false && details == true && stores == false) {
 					url = new URL(currentURL);
 				}
-//				APIresponseStr = getAPIresponse(url);
 				APIresponseStr = getAPIresponse(url);
 			} catch (MalformedURLException e) {
 				// TODO Auto-generated catch block
@@ -539,13 +559,10 @@ public class MainActivity extends Activity {
 		}
 		@Override
 		protected void onPostExecute(String result) {
-			// Parse JSON Method GOES HERE!!!
 //			Log.i(tag, result);
-//	    	APIresponse newResponse = new APIresponse(result);
-//	    	apiResponseList.add(newResponse);
-//	    	Log.i(tag, apiResponseList.toString());
 			super.onPostExecute(result);
 			
+			// Parse Methods Called based on Which API is Called
 			if (game == true && details == false && stores == false) {
 				parseData("games", result);
 			}
@@ -553,41 +570,19 @@ public class MainActivity extends Activity {
 				parseData("stores", result);
 			}
 			if (game == false && details == true && stores == false) {
-				Log.i(tag, "details got hit in api method");
-				Log.i(tag, result.toString());
+//				Log.i(tag, result.toString());
 				parseData("details", result);
 			}
 		}
     }
     
+    // Custom ListAdapter Class
     public class customListAdapter extends ArrayAdapter <Games> {
     	public customListAdapter() {
     		super(context, R.layout.list_item, gamesList);
     	}
-    	
-    	public Bitmap getImageFromURL(String thumbURL) {
-    		try {
-				URL currentURL = new URL(thumbURL);
-				HttpURLConnection currentConnection = (HttpURLConnection)currentURL.openConnection();
-				currentConnection.setDoInput(true);
-				currentConnection.connect();
-				InputStream connectionInput = currentConnection.getInputStream();
-				currentThumbnail = BitmapFactory.decodeStream(connectionInput);
-			} catch (MalformedURLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-				return null;
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			if (currentThumbnail != null) {
-				return currentThumbnail;
-			} else {
-				return null;
-			}
-    	}
 
+    	// Set List Item Information
 		@Override
 		public View getView(int position, View convertView, ViewGroup parent) {
 			View customItemView = convertView;
@@ -605,18 +600,8 @@ public class MainActivity extends Activity {
 			gameTitleView.setText(gamesList.get(position).gameName.toString());
 			cheapestPriceView.setText("$" + gamesList.get(position).cheapestPrice.toString());
 			
-/*			for (int a = 0; a < gamesList.size(); a++) {
-				if (gamesList.get(a).toString() == gamesList.get(position).toString()) {
-					ImageView thumbnailView = (ImageView)customItemView.findViewById(R.id.list_item_image);
-					TextView gameTitleView = (TextView)customItemView.findViewById(R.id.list_item_title);
-					TextView cheapestPriceView = (TextView)customItemView.findViewById(R.id.list_item_price);
-					
-				}
-			}*/
-			
 			return customItemView;
 		}
-    	
     }
     
 }
