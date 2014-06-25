@@ -1,0 +1,56 @@
+package classDetails;
+
+import android.content.Context;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
+
+public class CustomCell extends RelativeLayout{
+
+	public CustomCell(Context context) {
+		// TODO Auto-generated constructor stub
+		super (context);
+		LayoutParams parameters = new LayoutParams(LayoutParams.MATCH_PARENT, 
+				LayoutParams.MATCH_PARENT);
+		this.setLayoutParams(parameters);
+		
+		// ImageView Build
+		parameters = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+		parameters.height = 60;
+		parameters.width = 60;
+		parameters.addRule(ALIGN_PARENT_TOP, TRUE);
+		parameters.addRule(ALIGN_PARENT_LEFT, TRUE);
+		ImageView image = new ImageView(context);
+		image.setTag("list_item_image");
+		image.setLayoutParams(parameters);
+		image.setScaleType(ImageView.ScaleType.CENTER_CROP);
+		image.setContentDescription("@string/descriptor");
+		image.setLayoutParams(parameters);
+		
+		// Title Text Build
+		parameters = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+		parameters.height = (LayoutParams.WRAP_CONTENT);
+		parameters.width = (LayoutParams.WRAP_CONTENT);
+		parameters.leftMargin = 16;
+		parameters.addRule(RIGHT_OF, image.getId());
+		parameters.addRule(ALIGN_PARENT_TOP, TRUE);
+		TextView titleText = new TextView(context);
+		titleText.setTag("list_item_title");
+		titleText.setText("");
+		titleText.setTextAppearance(context, android.R.style.TextAppearance_Medium);
+		titleText.setLayoutParams(parameters);
+		
+		// Price Text Build
+		parameters = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+		parameters.height = (LayoutParams.WRAP_CONTENT);
+		parameters.width = (LayoutParams.WRAP_CONTENT);
+		parameters.rightMargin = 14;
+		parameters.addRule(BELOW, titleText.getId());
+		parameters.addRule(ALIGN_PARENT_RIGHT, TRUE);
+		TextView priceText = new TextView(context);
+		priceText.setText("");
+		priceText.setTextAppearance(context, android.R.style.TextAppearance_Small);
+		priceText.setLayoutParams(parameters);
+	}
+
+}

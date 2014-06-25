@@ -1,0 +1,36 @@
+package classDetails;
+
+import android.content.Context;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
+
+public class CustomCell extends RelativeLayout{
+
+	public CustomCell(Context context) {
+		// TODO Auto-generated constructor stub
+		super (context);
+		LayoutParams parameters = new LayoutParams(LayoutParams.MATCH_PARENT, 
+				LayoutParams.MATCH_PARENT);
+		this.setLayoutParams(parameters);
+		
+		// ImageView Build
+		parameters = new LayoutParams(LayoutParams.WRAP_CONTENT, 
+				LayoutParams.WRAP_CONTENT);
+		parameters.height = 60;
+		parameters.width = 60;
+		parameters.addRule(ALIGN_PARENT_TOP, TRUE);
+		parameters.addRule(ALIGN_PARENT_LEFT, TRUE);
+		ImageView image = new ImageView(context);
+		image.setLayoutParams(parameters);
+		image.setScaleType(ImageView.ScaleType.CENTER_CROP);
+		image.setContentDescription("@string/descriptor");
+		image.setTag("list_item_image");
+		
+		// Title Text Build
+		parameters.height = ()
+		parameters.width = 60;
+		parameters.addRule(ALIGN_PARENT_TOP, TRUE);
+		parameters.addRule(ALIGN_PARENT_LEFT, TRUE);
+	}
+
+}

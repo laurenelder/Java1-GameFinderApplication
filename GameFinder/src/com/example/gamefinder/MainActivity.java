@@ -6,6 +6,7 @@
 
 package com.example.gamefinder;
 
+//import com.example.gamefinder.CustomCellLayout;
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -42,15 +43,18 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import classDetails.GameDetails;
 import classDetails.Games;
+import classDetails.Returns;
 import classDetails.Stores;
 
 public class MainActivity extends Activity {
@@ -64,6 +68,7 @@ public class MainActivity extends Activity {
 	boolean game;
 	boolean details;
 	boolean stores;
+	boolean returnAll;
 	Bitmap currentThumbnail;
 	
 	// Array Adapters for List and Spinner
@@ -74,6 +79,7 @@ public class MainActivity extends Activity {
 	List<Games> gamesList = new ArrayList<Games>();
 	List<Stores> storeList = new ArrayList<Stores>();
 	List<GameDetails> gameDetails = new ArrayList<GameDetails>();
+	List<Returns> resultsReturned = new ArrayList<Returns>();
 	
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -126,6 +132,8 @@ public class MainActivity extends Activity {
 		// Spinner Code
 		spinnerAdapter = new ArrayAdapter<Stores>
 		(this, android.R.layout.simple_spinner_item, storeList);
+/*		spinnerAdapter = new ArrayAdapter<Stores>
+		(this, android.R.layout.simple_spinner_item, storeList);*/
 		spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		Spinner spinnerView = (Spinner)findViewById(R.id.storeList);
 		spinnerView.setAdapter(spinnerAdapter);
@@ -139,6 +147,7 @@ public class MainActivity extends Activity {
 			game = false;
 			details = false;
 			stores = true;
+			returnAll = true;
 			getAPIdata data = new getAPIdata();
 			data.execute(context.getString(R.string.store_url));
 		} else {
@@ -299,14 +308,23 @@ public class MainActivity extends Activity {
 					Integer thisID = 0;
 					
 					// Limit the number of Objects Saved
-					if (listCount <= 9) {
+					if (listCount <= 14) {
 //						Log.i(tag, listCount.toString());
 						// Set Class Method
-						setClass( classType, thisGameName, thisDealID, thisCheapestPrice
+						EditText searchField = (EditText)findViewById(R.id.gameInput);
+						String gameInput = searchField.getText().toString();
+						if (thisGameName.contains(gameInput)) {
+							setClass( classType, thisGameName, thisDealID, thisCheapestPrice
+									, thisThumbnail, thisStoreID, thisName, thisPublisher, thisSalePrice
+									, thisRetailPrice, thisImage, thisID);
+							listCount++;
+							
+						}
+/*						setClass( classType, thisGameName, thisDealID, thisCheapestPrice
 								, thisThumbnail, thisStoreID, thisName, thisPublisher, thisSalePrice
-								, thisRetailPrice, thisImage, thisID);
+								, thisRetailPrice, thisImage, thisID);*/
 					}
-					listCount++;
+//					listCount++;
 				}
 				
 			}
@@ -387,6 +405,11 @@ public class MainActivity extends Activity {
 			listAdapter.notifyDataSetChanged();
 		}
 		if (type.matches("stores")) {
+/*			if (returnAll == true) {
+				Stores newStoreList = new Stores(1234);
+				storeList.add(newStoreList);
+				returnAll = false;
+			}*/
 			Stores newStoreList = new Stores(ID);
 			storeList.add(newStoreList);
 			spinnerAdapter.notifyDataSetChanged();
@@ -586,6 +609,10 @@ public class MainActivity extends Activity {
 		@Override
 		public View getView(int position, View convertView, ViewGroup parent) {
 			View customItemView = convertView;
+			
+			// Get Layout From JAR
+//			RelativeLayout customLayout = new CustomCellLayout(this);
+			
 			if (customItemView == null) {
 				LayoutInflater viewInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 				customItemView = viewInflater.inflate(R.layout.list_item, parent, false);
@@ -594,6 +621,10 @@ public class MainActivity extends Activity {
 			ImageView thumbnailView = (ImageView)customItemView.findViewById(R.id.list_item_image);
 			TextView gameTitleView = (TextView)customItemView.findViewById(R.id.list_item_title);
 			TextView cheapestPriceView = (TextView)customItemView.findViewById(R.id.list_item_price);
+			
+/*			ImageView thumbnailView = (ImageView)customItemView.findViewWithTag("list_item_image");
+			TextView gameTitleView = (TextView)customItemView.findViewWithTag("list_item_title");
+			TextView cheapestPriceView = (TextView)customItemView.findViewWithTag("list_item_price");*/
 			
 			currentThumbnail = getImageFromURL(gamesList.get(position).thumbnail.toString());
 			thumbnailView.setImageBitmap(currentThumbnail);

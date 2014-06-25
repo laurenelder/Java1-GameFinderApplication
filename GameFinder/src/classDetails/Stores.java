@@ -11,6 +11,7 @@ public class Stores {
 	
 	public storeName name;
 	public static enum storeName {
+		All_Stores,
 		Steam,
 		Gamers_Gate,
 		GreenManGaming,
@@ -28,6 +29,10 @@ public class Stores {
 
 	public Stores(Integer ID) {
 		// TODO Auto-generated constructor stub
+		if (ID == 1234) {
+			this.storeID = ID.toString();
+			this.name = storeName.All_Stores;
+		}
 		if (ID == 1) {
 			this.storeID = ID.toString();
 			this.name = storeName.Steam;
@@ -79,6 +84,8 @@ public class Stores {
 	}
 	
 	public String toString() {
-		return name.toString();
+		String store = name.toString();
+		store = store.replace("_", " ");
+		return store;
 	}
 }

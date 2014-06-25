@@ -1,0 +1,9 @@
+package classDetails;
+
+public class Returns {
+
+	public Returns() {
+		// TODO Auto-generated constructor stub
+	}
+
+}

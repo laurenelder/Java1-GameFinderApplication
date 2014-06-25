@@ -1,0 +1,15 @@
+package classDetails;
+
+import android.content.Context;
+import android.widget.RelativeLayout;
+
+public class CustomCell extends RelativeLayout{
+
+	public CustomCell(Context context) {
+		// TODO Auto-generated constructor stub
+		super (context);
+		LayoutParams parameters = (LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
+		this.setLayoutParams(parameters);
+	}
+
+}

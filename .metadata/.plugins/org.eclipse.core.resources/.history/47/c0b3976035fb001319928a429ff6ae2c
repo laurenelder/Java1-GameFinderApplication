@@ -1,0 +1,9 @@
+package classDetails;
+
+public class CustomCell {
+
+	public CustomCell() {
+		// TODO Auto-generated constructor stub
+	}
+
+}
