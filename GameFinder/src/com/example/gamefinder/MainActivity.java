@@ -49,6 +49,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -70,6 +71,7 @@ public class MainActivity extends Activity {
 	boolean stores;
 	boolean returnAll;
 	Bitmap currentThumbnail;
+	ProgressBar animation;
 	
 	// Array Adapters for List and Spinner
 	ArrayAdapter<Games> listAdapter;
@@ -99,6 +101,10 @@ public class MainActivity extends Activity {
                     .add(R.id.container, new PlaceholderFragment())
                     .commit();
         }
+        
+        // Set Animation
+        animation = (ProgressBar)findViewById(R.id.busyAnimation);
+//        animation.setVisibility(View.INVISIBLE);
         
         // ListView Code 
 		listAdapter = new customListAdapter();
@@ -556,6 +562,14 @@ public class MainActivity extends Activity {
     class getAPIdata extends AsyncTask<String, Void, String> {
 
 		@Override
+		protected void onPreExecute() {
+			// TODO Auto-generated method stub
+			super.onPreExecute();
+			
+			// Show Animation
+			animation.setVisibility(View.VISIBLE);
+		}
+		@Override
 		protected String doInBackground(String... params) {
 			// TODO Auto-generated method stub
 			String APIresponseStr = "";
@@ -584,6 +598,9 @@ public class MainActivity extends Activity {
 		protected void onPostExecute(String result) {
 //			Log.i(tag, result);
 			super.onPostExecute(result);
+			
+			// Hide Animation
+			animation.setVisibility(View.GONE);
 			
 			// Parse Methods Called based on Which API is Called
 			if (game == true && details == false && stores == false) {
