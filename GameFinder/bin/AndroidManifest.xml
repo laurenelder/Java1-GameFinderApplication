@@ -1,4 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
+
+<!-- Name: Devin "Lauren" Elder -->
+<!-- Application: Game Finder Application -->
+<!-- Date: 6/26/2014 -->
+<!-- Class: Java 1 Term 201406 -->
+<!-- Assignment: Project 4 -->
+
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.gamefinder"
     android:versionCode="1"

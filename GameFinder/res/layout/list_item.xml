@@ -2,9 +2,9 @@
 
 <!-- Name: Devin "Lauren" Elder -->
 <!-- Application: Game Finder Application -->
-<!-- Date: 6/18/2014 -->
+<!-- Date: 6/26/2014 -->
 <!-- Class: Java 1 Term 201406 -->
-<!-- Assignment: Project 3 -->
+<!-- Assignment: Project 4 -->
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
@@ -19,7 +19,8 @@
         android:layout_marginLeft="16dp"
         android:layout_toRightOf="@+id/list_item_image"
         android:text=""
-        android:textAppearance="?android:attr/textAppearanceMedium" />
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:typeface="normal" />
 
     <ImageView
         android:id="@+id/list_item_image"

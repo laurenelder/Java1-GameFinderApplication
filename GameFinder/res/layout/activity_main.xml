@@ -1,8 +1,8 @@
 <!-- Name: Devin "Lauren" Elder -->
 <!-- Application: Game Finder Application -->
-<!-- Date: 6/18/2014 -->
+<!-- Date: 6/26/2014 -->
 <!-- Class: Java 1 Term 201406 -->
-<!-- Assignment: Project 3 -->
+<!-- Assignment: Project 4 -->
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
@@ -17,11 +17,12 @@
         android:id="@+id/introText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="5dp"
         android:layout_gravity="center"
+        android:layout_margin="5dp"
         android:gravity="center"
         android:text="@string/title_string"
-        android:textAppearance="?android:attr/textAppearanceLarge" />
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:typeface="serif" />
 
     <EditText
         android:id="@+id/gameInput"
@@ -52,7 +53,8 @@
         android:layout_marginBottom="10dp"
         android:layout_gravity="center"
         android:background="@drawable/gradient_button"
-        android:text="@string/button_string" />
+        android:text="@string/button_string"
+        android:textStyle="bold" />
     
     <ProgressBar 
         android:id="@+id/busyAnimation"

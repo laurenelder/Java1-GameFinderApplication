@@ -101,8 +101,5 @@ public final class R {
  All customizations that are NOT specific to a particular API-level can go here. 
          */
         public static final int AppTheme=0x7f070001;
-        /**   Custom Theme 
-         */
-        public static final int GameFinderCustomTheme=0x7f070002;
     }
 }

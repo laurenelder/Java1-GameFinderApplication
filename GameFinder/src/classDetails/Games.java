@@ -1,8 +1,8 @@
 // Name: Devin "Lauren" Elder
 // Application: Game Finder Application
-// Date: 6/18/2014
+// Date: 6/26/2014
 // Class: Java 1 Term 201406
-// Assignment: Project 3
+// Assignment: Project 4
 
 package classDetails;
 

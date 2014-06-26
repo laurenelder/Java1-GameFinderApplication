@@ -1,8 +1,8 @@
 // Name: Devin "Lauren" Elder
 // Application: Game Finder Application
-// Date: 6/18/2014
+// Date: 6/26/2014
 // Class: Java 1 Term 201406
-// Assignment: Project 3
+// Assignment: Project 4
 
 package com.example.gamefinder;
 
@@ -23,7 +23,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import android.R.integer;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Fragment;
@@ -31,7 +30,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.media.Image;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
@@ -43,7 +41,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewGroup.LayoutParams;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemSelectedListener;
@@ -53,7 +50,6 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import classDetails.GameDetails;
@@ -79,7 +75,6 @@ public class MainActivity extends Activity {
 	
 	// Array Adapters for List and Spinner
 	ArrayAdapter<Games> listAdapter;
-//	ArrayAdapter<Stores> spinnerAdapter;
 	ArrayAdapter<Returns> spinnerAdapter;
 	
 	// Class Lists
@@ -109,7 +104,6 @@ public class MainActivity extends Activity {
         
         // Set Animation
         animation = (ProgressBar)findViewById(R.id.busyAnimation);
-//        animation.setVisibility(View.INVISIBLE);
         
         // ListView Code 
 		listAdapter = new customListAdapter();
@@ -145,13 +139,6 @@ public class MainActivity extends Activity {
 		parseData("games", null);
 		
 		// Spinner Code
-/*		spinnerAdapter = new ArrayAdapter<Stores>
-		(this, android.R.layout.simple_spinner_item, storeList);
-		spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-		Spinner spinnerView = (Spinner)findViewById(R.id.storeList);
-		spinnerView.setAdapter(spinnerAdapter);*/
-		
-		// Spinner Code
 		spinnerAdapter = new ArrayAdapter<Returns>
 		(this, android.R.layout.simple_spinner_item, resultsReturned);
 		spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -160,26 +147,26 @@ public class MainActivity extends Activity {
 		spinnerView.setOnItemSelectedListener(new getSelectedItem());
 		
 		// Check Network Connection and Show Error Notification if false
-/*		if (checkConnection(context) == true) {
+		if (checkConnection(context) == true) {
 			// Boolean Set to Select Correct API
 			game = false;
 			details = false;
 			stores = true;
-			returnAll = true;
 			getAPIdata data = new getAPIdata();
 			data.execute(context.getString(R.string.store_url));
 		} else {
 			showErrorAlert(findViewById(android.R.id.content).getRootView(), "connection");
 			Log.i(tag, "No Internet Connection");
-		}*/
+		}
 		
 		// Set Results Returned Class
 		for (Integer n = 1; n < 5; n++) {
 			Integer revisedNum = n * 5;
 			Returns newNumberReturned = new Returns(revisedNum);
 			resultsReturned.add(newNumberReturned);
-			spinnerAdapter.notifyDataSetChanged();
 		}
+		// Update Spinner after all objects are added to class
+		spinnerAdapter.notifyDataSetChanged();
 
 //		Log.i(tag, gamesList.toString());
 		
@@ -212,7 +199,7 @@ public class MainActivity extends Activity {
 						currentURL = gameFullURL;
 						getAPIdata data = new getAPIdata();
 						data.execute(gameFullURL);
-						Log.i(tag, currentURL.toString());
+//						Log.i(tag, currentURL.toString());
 //						Log.i(tag, gamesList.toString());
 					}
 				} else {
@@ -346,13 +333,10 @@ public class MainActivity extends Activity {
 							listCount++;
 							
 						}
-/*						setClass( classType, thisGameName, thisDealID, thisCheapestPrice
-								, thisThumbnail, thisStoreID, thisName, thisPublisher, thisSalePrice
-								, thisRetailPrice, thisImage, thisID);*/
 					}
-//					listCount++;
 				}
-				
+				// Update ListView after all objects are saved to class
+				listAdapter.notifyDataSetChanged();
 			}
 			if (classType.matches("stores")) {
 				JSONArray jsonArray = new JSONArray(jsonString);
@@ -428,17 +412,10 @@ public class MainActivity extends Activity {
 			Games newGame = new Games(gameName, dealID, cheapestPrice, thumbnail);
 			gamesList.add(newGame);
 //			Log.i(tag, newGame.toString());
-			listAdapter.notifyDataSetChanged();
 		}
 		if (type.matches("stores")) {
-/*			if (returnAll == true) {
-				Stores newStoreList = new Stores(1234);
-				storeList.add(newStoreList);
-				returnAll = false;
-			}*/
 			Stores newStoreList = new Stores(ID);
 			storeList.add(newStoreList);
-			spinnerAdapter.notifyDataSetChanged();
 		}
 		if (type.matches("details")) {
 			GameDetails details = new GameDetails(StoreID, Name, Publisher
@@ -447,7 +424,7 @@ public class MainActivity extends Activity {
 			
 			// Show Game Details Notification
 			showAlert(findViewById(android.R.id.content).getRootView());
-			Log.i(tag, details.toString());
+//			Log.i(tag, details.toString());
 		}
 	}
 	

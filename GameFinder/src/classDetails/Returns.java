@@ -1,11 +1,14 @@
+// Name: Devin "Lauren" Elder
+// Application: Game Finder Application
+// Date: 6/26/2014
+// Class: Java 1 Term 201406
+// Assignment: Project 4
+
 package classDetails;
 
-import classDetails.Stores.storeName;
-import android.R.integer;
 
 public class Returns {
 	
-//	public Integer numberReturned;
 	public display numberDisplay;
 	public static enum display {
 		Show_5_Results,
