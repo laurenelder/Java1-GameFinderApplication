@@ -1,4 +1,10 @@
-<resources>
+<!-- Name: Devin "Lauren" Elder -->
+<!-- Application: Game Finder Application -->
+<!-- Date: 6/18/2014 -->
+<!-- Class: Java 1 Term 201406 -->
+<!-- Assignment: Project 3 -->
+
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
 
     <!--
         Base application theme, dependent on API level. This theme is replaced
@@ -15,6 +21,11 @@
     <!-- Application theme. -->
     <style name="AppTheme" parent="AppBaseTheme">
         <!-- All customizations that are NOT specific to a particular API-level can go here. -->
+    </style>
+    
+    <!--  Custom Theme -->
+    <style name= "GameFinderCustomTheme" parent="android:Theme.Black">
+
     </style>
 
 </resources>

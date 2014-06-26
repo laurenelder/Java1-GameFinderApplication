@@ -1,0 +1,26 @@
+package classDetails;
+
+import classDetails.Stores.storeName;
+import android.R.integer;
+
+public class Returns {
+	
+	public Integer numberReturned;
+	public display numberDisplay;
+	public static enum display {
+		Show_5_Results,
+		Show_10_Results,
+		Show_15_Results,
+		Show_20_Results
+		
+	}
+
+	public Returns(Integer number) {
+		// TODO Auto-generated constructor stub
+		this.numberReturned = number;
+	}
+
+	public String toString() {
+		return numberReturned.toString();
+	}
+}

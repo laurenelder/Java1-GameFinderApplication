@@ -23,6 +23,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.R.integer;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Fragment;
@@ -30,6 +31,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.media.Image;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
@@ -41,6 +43,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewGroup.LayoutParams;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemSelectedListener;
@@ -69,13 +72,15 @@ public class MainActivity extends Activity {
 	boolean game;
 	boolean details;
 	boolean stores;
-	boolean returnAll;
+	int returnNum;
 	Bitmap currentThumbnail;
 	ProgressBar animation;
+	Button findButton;
 	
 	// Array Adapters for List and Spinner
 	ArrayAdapter<Games> listAdapter;
-	ArrayAdapter<Stores> spinnerAdapter;
+//	ArrayAdapter<Stores> spinnerAdapter;
+	ArrayAdapter<Returns> spinnerAdapter;
 	
 	// Class Lists
 	List<Games> gamesList = new ArrayList<Games>();
@@ -135,20 +140,27 @@ public class MainActivity extends Activity {
 			
 		});
 		
-		// Spinner Code
-		spinnerAdapter = new ArrayAdapter<Stores>
-		(this, android.R.layout.simple_spinner_item, storeList);
-/*		spinnerAdapter = new ArrayAdapter<Stores>
-		(this, android.R.layout.simple_spinner_item, storeList);*/
-		spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-		Spinner spinnerView = (Spinner)findViewById(R.id.storeList);
-		spinnerView.setAdapter(spinnerAdapter);
-		
 		// Static Game Hint List On App Load
+        returnNum = 4;
 		parseData("games", null);
 		
+		// Spinner Code
+/*		spinnerAdapter = new ArrayAdapter<Stores>
+		(this, android.R.layout.simple_spinner_item, storeList);
+		spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+		Spinner spinnerView = (Spinner)findViewById(R.id.storeList);
+		spinnerView.setAdapter(spinnerAdapter);*/
+		
+		// Spinner Code
+		spinnerAdapter = new ArrayAdapter<Returns>
+		(this, android.R.layout.simple_spinner_item, resultsReturned);
+		spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+		Spinner spinnerView = (Spinner)findViewById(R.id.resultList);
+		spinnerView.setAdapter(spinnerAdapter);
+		spinnerView.setOnItemSelectedListener(new getSelectedItem());
+		
 		// Check Network Connection and Show Error Notification if false
-		if (checkConnection(context) == true) {
+/*		if (checkConnection(context) == true) {
 			// Boolean Set to Select Correct API
 			game = false;
 			details = false;
@@ -159,12 +171,20 @@ public class MainActivity extends Activity {
 		} else {
 			showErrorAlert(findViewById(android.R.id.content).getRootView(), "connection");
 			Log.i(tag, "No Internet Connection");
+		}*/
+		
+		// Set Results Returned Class
+		for (Integer n = 1; n < 5; n++) {
+			Integer revisedNum = n * 5;
+			Returns newNumberReturned = new Returns(revisedNum);
+			resultsReturned.add(newNumberReturned);
+			spinnerAdapter.notifyDataSetChanged();
 		}
 
 //		Log.i(tag, gamesList.toString());
 		
 		// Find Button OnClickListener
-		Button findButton = (Button)findViewById(R.id.findButton);
+		findButton = (Button)findViewById(R.id.findButton);
 		findButton.setOnClickListener(new View.OnClickListener() {
 
 			@Override
@@ -314,7 +334,7 @@ public class MainActivity extends Activity {
 					Integer thisID = 0;
 					
 					// Limit the number of Objects Saved
-					if (listCount <= 14) {
+					if (listCount <= returnNum) {
 //						Log.i(tag, listCount.toString());
 						// Set Class Method
 						EditText searchField = (EditText)findViewById(R.id.gameInput);
@@ -483,6 +503,7 @@ public class MainActivity extends Activity {
 	// Alert Dialog with Game Information
     private void showAlert(View view) { 
     	AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(MainActivity.this);
+    	
     	alertDialogBuilder.setTitle(R.string.dialog_title);
     	// Constructing Alert Information from JSON Data
     	
@@ -649,6 +670,20 @@ public class MainActivity extends Activity {
 			cheapestPriceView.setText("$" + gamesList.get(position).cheapestPrice.toString());
 			
 			return customItemView;
+		}
+    }
+    
+    // Spinner OnItemSelected Listener
+    public class getSelectedItem implements OnItemSelectedListener {
+
+        public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
+            returnNum = (pos * 5) + 4;
+        }
+
+		@Override
+		public void onNothingSelected(AdapterView<?> parent) {
+			// TODO Auto-generated method stub
+			
 		}
     }
     
